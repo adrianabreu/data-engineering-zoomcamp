@@ -27,6 +27,9 @@ Which tag has the following text? - *Automatically remove the container when it 
 - `--rmc`
 - `--rm`
 
+Docs are quite straightforward here running `docker run --help` yields 
+
+"--rm  Automatically remove the container when it exits"
 
 ## Question 2. Understanding docker first run 
 
@@ -40,6 +43,16 @@ What is version of the package *wheel* ?
 - 23.0.1
 - 58.1.0
 
+root@9b1bddb68655:/# pip list
+Package    Version
+
+---
+
+pip        23.0.1
+setuptools 58.1.0
+wheel      0.42.0
+
+Answer is 0.42.0
 
 # Prepare Postgres
 
@@ -80,6 +93,11 @@ Tip: For every trip on a single day, we only care about the trip with the longes
 - 2019-09-26
 - 2019-09-21
 
+```sql
+select * from green_taxi_data order by trip_distance desc
+```
+
+2019-09-26 19:32:52 -  341.64
 
 ## Question 5. Three biggest pick up Boroughs
 
@@ -91,6 +109,24 @@ Which were the 3 pick up Boroughs that had a sum of total_amount superior to 500
 - "Bronx" "Brooklyn" "Manhattan"
 - "Bronx" "Manhattan" "Queens" 
 - "Brooklyn" "Queens" "Staten Island"
+
+```sql
+select zones."Borough", sum(green_taxi_data.total_amount) as t  
+from green_taxi_data 
+inner join zones on green_taxi_data."PULocationID" = zones."LocationID"  where lpep_pickup_datetime >= '2019-09-18 00:00:00' and lpep_pickup_datetime <= '2019-09-18 23:59:59' 
+group by 1 
+order by t desc
+```
+
+| Borough       | t                  |
+|---------------+--------------------|
+| Brooklyn      | 96333.23999999915  |
+| Manhattan     | 92271.2999999985   |
+| Queens        | 78671.70999999918  |
+| Bronx         | 32830.090000000055 |
+| Unknown       | 728.75             |
+| Staten Island | 342.59             |
++---------------+--------------------+
 
 
 ## Question 6. Largest tip
@@ -105,7 +141,27 @@ Note: it's not a typo, it's `tip` , not `trip`
 - JFK Airport
 - Long Island City/Queens Plaza
 
+```sql
+with highest_tip_zone as (
+select green_taxi_data."DOLocationID" as do,green_taxi_data.tip_amount
+from green_taxi_data 
+inner join zones on green_taxi_data."PULocationID" = zones."LocationID"  
+where lpep_pickup_datetime >= '2019-09-01 00:00:00' and lpep_pickup_datetime <= '2019-09-30 23:59:59'  and zones."Zone" = 'Astoria' 
+order by green_taxi_data.tip_amount desc 
+limit 2
+)
 
+select z."Zone", tip_amount
+from zones z
+inner join highest_tip_zone htz on z."LocationID" = htz."do"
+```
+
++-------------+------------+
+| Zone        | tip_amount |
+|-------------+------------|
+| JFK Airport | 62.31      |
+| Woodside    | 30.0       |
++-------------+------------+
 
 ## Terraform
 
