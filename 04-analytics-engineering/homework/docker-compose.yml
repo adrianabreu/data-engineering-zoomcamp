@@ -1,0 +1,48 @@
+services:
+  pgdatabase:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=production
+    volumes:
+      - "./ny_taxi_postgres_data:/var/lib/postgresql/data:rw"
+    ports:
+      - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - "8080:80"
+  ingestion:
+    depends_on:
+      - pgdatabase
+    build:
+      context: .
+      dockerfile: Dockerfile.ingestion
+    entrypoint: ["python", "load_data.py"]
+  dbt:
+    image:  ghcr.io/dbt-labs/dbt-postgres
+    volumes:
+      - .:/usr/app
+    stdin_open: true
+    tty: true
+  metabase-app:
+    image: metabase/metabase
+    restart: always
+    ports:
+      - 3001:3000
+    volumes:
+      # declare your mount volume /host/dir:/container/dir
+      - ./metabase-data:/metabase-data
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: production
+      MB_DB_PORT: 5432
+      MB_DB_USER: root
+      MB_DB_PASS: root
+      MB_DB_HOST: 172.24.0.3
+    depends_on:
+      - pgdatabase

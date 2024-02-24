@@ -1,0 +1,12 @@
+adrian:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: 172.24.0.3
+      user: root
+      password: root
+      port: 5432
+      dbname: production
+      schema: dbt-adrian
+      threads: 4
