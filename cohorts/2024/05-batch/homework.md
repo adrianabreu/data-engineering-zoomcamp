@@ -15,7 +15,15 @@ For this homework we will be using the FHV 2019-10 data found here. [FHV Data](h
 - Create a local spark session
 - Execute spark.version.
 
-What's the output?
+What's the output? 
+```
+Using Python version 3.10.12 (main, Nov 20 2023 15:14:05)
+Spark context Web UI available at http://192.168.0.26:4040
+Spark context available as 'sc' (master = local[*], app id = local-1708865370026).
+SparkSession available as 'spark'.
+>>> spark.version
+'3.3.2'
+```
 
 > [!NOTE]
 > To install PySpark follow this [guide](https://github.com/DataTalksClub/data-engineering-zoomcamp/blob/main/05-batch/setup/pyspark.md)
