@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "kafka-producer"
+version = "0.1.0"
+description = ""
+authors = ["Adrian Abreu <adrianabreugonzalez@outlook.com>"]
+readme = "README.md"
+packages = [{include = "kafka_producer"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+kafka-python = "^2.0.2"
+pandas = "^2.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -32,3 +32,12 @@ services:
       - 9092:9092
       - 28082:28082
       - 29092:29092
+  all:
+    image: jupyter/pyspark-notebook:spark-3.3.2
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    volumes:
+      - "./kafka-producer:/home/jovyan/work/"
+    ports:
+      - "8888:8888"
+      - "4040:4040"
